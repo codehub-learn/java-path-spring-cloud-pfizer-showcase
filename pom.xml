@@ -26,6 +26,11 @@
 	<!-- Modules -->
 	<modules>
 		<module>java-path-spring-cloud-app</module>
+		<module>java-path-spring-cloud-catalog-service</module>
+		<module>java-path-spring-cloud-customer-service</module>
+		<module>java-path-spring-cloud-loyalty-service</module>
+		<module>java-path-spring-cloud-mail-service</module>
+		<module>java-path-spring-cloud-order-service</module>
 	</modules>
 
 	<!-- Properties/Variables -->
