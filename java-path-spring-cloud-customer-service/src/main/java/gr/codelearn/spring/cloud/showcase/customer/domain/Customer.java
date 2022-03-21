@@ -1,7 +1,8 @@
 package gr.codelearn.spring.cloud.showcase.customer.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import gr.codelearn.spring.cloud.showcase.customer.transfer.KeyValue;
+import gr.codelearn.spring.cloud.showcase.core.domain.BaseModel;
+import gr.codelearn.spring.cloud.showcase.core.domain.CustomerCategory;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,33 +10,13 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
-
-//@formatter:off
-@NamedNativeQuery(name = "Customer.mostExpensiveProductPurchases",
-		query =	"SELECT C.FIRSTNAME || ' ' || C.LASTNAME as fullname, COUNT(*) as purchases " +
-				"FROM ORDERS O, ORDER_ITEMS OI, CUSTOMERS C " +
-				"WHERE OI.ORDER_ID = O.ID " +
-				"AND O.CUSTOMER_ID = C.ID " +
-				"AND OI.PRODUCT_ID = (SELECT TOP 1 ID FROM PRODUCTS ORDER BY PRICE DESC) " +
-				"GROUP BY O.CUSTOMER_ID " +
-				"ORDER BY purchases, c.lastname, c.firstname",
-		resultSetMapping = "customerMostExpensiveProductPurchases")
-@SqlResultSetMappings({
-	@SqlResultSetMapping(name="customerMostExpensiveProductPurchases",
-			classes = @ConstructorResult(
-							targetClass = KeyValue.class,
-							columns = {
-										@ColumnResult(name="fullname", type = String.class),
-										@ColumnResult(name="purchases", type = BigDecimal.class)
-							}
-			)
-	)
-})
-
-//@formatter:on
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
@@ -47,7 +28,7 @@ import java.math.BigDecimal;
 @Builder
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class Customer extends BaseEntity {
+public class Customer extends BaseModel {
 	@NotNull
 	@Column(length = 50, nullable = false, unique = true)
 	private String email;

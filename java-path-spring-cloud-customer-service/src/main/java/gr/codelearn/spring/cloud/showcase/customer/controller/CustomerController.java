@@ -1,9 +1,10 @@
 package gr.codelearn.spring.cloud.showcase.customer.controller;
 
+import gr.codelearn.spring.cloud.showcase.core.controller.AbstractController;
+import gr.codelearn.spring.cloud.showcase.core.service.BaseService;
+import gr.codelearn.spring.cloud.showcase.core.transfer.ApiResponse;
 import gr.codelearn.spring.cloud.showcase.customer.domain.Customer;
-import gr.codelearn.spring.cloud.showcase.customer.service.BaseService;
 import gr.codelearn.spring.cloud.showcase.customer.service.CustomerService;
-import gr.codelearn.spring.cloud.showcase.customer.transfer.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
