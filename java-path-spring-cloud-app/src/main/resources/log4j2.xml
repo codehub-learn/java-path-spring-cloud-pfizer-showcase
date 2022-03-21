@@ -12,25 +12,9 @@
 		</Console>
 
 		<!-- Rolling Random Access File Appender with a default buffer of 256 * 1024 bytes -->
-		<RollingRandomAccessFile name="RollingRandomAccessFileAppender"
+		<RollingRandomAccessFile name="DefaultAppender"
 								 fileName="logs/java-path-spring-core.log"
-								 filePattern="logs/java-path-spring-core-%d{yyyy-MM-dd}.zip">
-			<PatternLayout>
-				<Pattern>${LOG_PATTERN}</Pattern>
-			</PatternLayout>
-			<Policies>
-				<TimeBasedTriggeringPolicy/>
-			</Policies>
-			<DefaultRolloverStrategy>
-				<Delete basePath="logs">
-					<IfLastModified age="30d"/>
-				</Delete>
-			</DefaultRolloverStrategy>
-		</RollingRandomAccessFile>
-		<!-- Rolling Random Access File Appender with a default buffer of 256 * 1024 bytes -->
-		<RollingRandomAccessFile name="SqlCommandRollingRandomAccessFileAppender"
-								 fileName="logs/java-path-spring-core-sql.log"
-								 filePattern="logs/java-path-spring-core-sql%d{yyyy-MM-dd}.zip">
+								 filePattern="logs/java-path-spring-app-%d{yyyy-MM-dd}.zip">
 			<PatternLayout>
 				<Pattern>${LOG_PATTERN}</Pattern>
 			</PatternLayout>
@@ -48,40 +32,24 @@
 	<Loggers>
 		<AsyncLogger name="gr.codelearn.spring" level="trace" additivity="false">
 			<AppenderRef ref="ConsoleAppender"/>
-			<AppenderRef ref="RollingRandomAccessFileAppender"/>
+			<AppenderRef ref="DefaultAppender"/>
 		</AsyncLogger>
 		<AsyncLogger name="org.springframework.data" level="info" additivity="false">
 			<AppenderRef ref="ConsoleAppender"/>
-			<AppenderRef ref="RollingRandomAccessFileAppender"/>
+			<AppenderRef ref="DefaultAppender"/>
 		</AsyncLogger>
 		<AsyncLogger name="org.springframework.web" level="debug" additivity="false">
 			<AppenderRef ref="ConsoleAppender"/>
-			<AppenderRef ref="RollingRandomAccessFileAppender"/>
-		</AsyncLogger>
-		<AsyncLogger name="org.springframework.cache" level="trace" additivity="false">
-			<AppenderRef ref="ConsoleAppender"/>
-			<AppenderRef ref="RollingRandomAccessFileAppender"/>
+			<AppenderRef ref="DefaultAppender"/>
 		</AsyncLogger>
 		<AsyncLogger name="org.springframework" level="info" additivity="false">
 			<AppenderRef ref="ConsoleAppender"/>
-			<AppenderRef ref="RollingRandomAccessFileAppender"/>
-		</AsyncLogger>
-		<AsyncLogger name="com.zaxxer.hikari" level="debug" additivity="false">
-			<AppenderRef ref="ConsoleAppender"/>
-			<AppenderRef ref="RollingRandomAccessFileAppender"/>
-		</AsyncLogger>
-		<AsyncLogger name="org.hibernate.SQL" level="trace" additivity="false">
-			<AppenderRef ref="ConsoleAppender"/>
-			<AppenderRef ref="SqlCommandRollingRandomAccessFileAppender"/>
-		</AsyncLogger>
-		<AsyncLogger name="org.hibernate.type.descriptor.sql.BasicBinder" level="trace" additivity="false">
-			<AppenderRef ref="ConsoleAppender"/>
-			<AppenderRef ref="SqlCommandRollingRandomAccessFileAppender"/>
+			<AppenderRef ref="DefaultAppender"/>
 		</AsyncLogger>
 
 		<Root level="info">
 			<AppenderRef ref="ConsoleAppender"/>
-			<AppenderRef ref="RollingRandomAccessFileAppender"/>
+			<AppenderRef ref="DefaultAppender"/>
 		</Root>
 	</Loggers>
 </Configuration>
