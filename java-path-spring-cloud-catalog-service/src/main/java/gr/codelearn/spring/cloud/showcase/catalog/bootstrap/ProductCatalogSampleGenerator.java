@@ -15,7 +15,7 @@ import java.util.List;
 @Profile("generate-product-catalog")
 @Component
 @RequiredArgsConstructor
-public class ProductCatalogRunner implements CommandLineRunner {
+public class ProductCatalogSampleGenerator implements CommandLineRunner {
 	private final CategoryService categoryService;
 	private final ProductService productService;
 
