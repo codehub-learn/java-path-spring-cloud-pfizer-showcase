@@ -1,9 +1,10 @@
 package gr.codelearn.spring.cloud.showcase.catalog.controller;
 
 import gr.codelearn.spring.cloud.showcase.catalog.domain.Product;
-import gr.codelearn.spring.cloud.showcase.catalog.service.BaseService;
 import gr.codelearn.spring.cloud.showcase.catalog.service.ProductService;
-import gr.codelearn.spring.cloud.showcase.catalog.transfer.ApiResponse;
+import gr.codelearn.spring.cloud.showcase.core.controller.AbstractController;
+import gr.codelearn.spring.cloud.showcase.core.service.BaseService;
+import gr.codelearn.spring.cloud.showcase.core.transfer.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

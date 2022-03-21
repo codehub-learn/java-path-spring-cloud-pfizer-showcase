@@ -1,6 +1,7 @@
 package gr.codelearn.spring.cloud.showcase.catalog.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import gr.codelearn.spring.cloud.showcase.core.domain.BaseModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,7 +25,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class Category extends BaseEntity {
+public class Category extends BaseModel {
 	@NotNull
 	@Column(length = 50, nullable = false)
 	private String description;

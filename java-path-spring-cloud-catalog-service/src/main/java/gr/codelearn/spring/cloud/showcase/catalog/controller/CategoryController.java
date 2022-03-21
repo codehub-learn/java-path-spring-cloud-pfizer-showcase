@@ -3,6 +3,7 @@ package gr.codelearn.spring.cloud.showcase.catalog.controller;
 import gr.codelearn.spring.cloud.showcase.catalog.domain.Category;
 import gr.codelearn.spring.cloud.showcase.catalog.service.BaseService;
 import gr.codelearn.spring.cloud.showcase.catalog.service.CategoryService;
+import gr.codelearn.spring.cloud.showcase.core.controller.AbstractController;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

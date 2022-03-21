@@ -1,6 +1,7 @@
 package gr.codelearn.spring.cloud.showcase.catalog.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import gr.codelearn.spring.cloud.showcase.core.domain.BaseModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,7 +28,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class Product extends BaseEntity {
+public class Product extends BaseModel {
 	@NotNull
 	@Column(length = 50, nullable = false, unique = true)
 	private String serial;

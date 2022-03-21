@@ -1,7 +1,7 @@
 package gr.codelearn.spring.cloud.showcase.catalog.repository;
 
 import gr.codelearn.spring.cloud.showcase.catalog.domain.Product;
-import gr.codelearn.spring.cloud.showcase.catalog.transfer.KeyValue;
+import gr.codelearn.spring.cloud.showcase.core.transfer.KeyValue;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
