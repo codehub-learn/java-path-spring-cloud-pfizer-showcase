@@ -65,3 +65,15 @@ spring:
       # .sql) and DML (data.sql) scripts.
       mode: never
       platform: h2
+
+eureka:
+  client:
+    fetch-registry: true
+    refresh:
+      enable: false
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8100/eureka/
+  instance:
+    lease-renewal-interval-in-seconds: 30
+    instance-id: ${spring.application.name}-${random.value}
