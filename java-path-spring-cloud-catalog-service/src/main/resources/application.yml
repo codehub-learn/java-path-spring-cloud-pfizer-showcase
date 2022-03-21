@@ -61,6 +61,8 @@ spring:
     cache-names: catalog
   application:
     name: catalog-service
+  config:
+    import: optional:configserver:http://localhost:8000
   sql:
     init:
       # Mode to apply when determining if DataSource initialization should be performed using the available DDL (schema
