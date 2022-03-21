@@ -1,10 +1,10 @@
 package gr.codelearn.spring.cloud.showcase.loyalty.service.rule;
 
-import gr.codelearn.spring.cloud.showcase.loyalty.domain.BaseEntity;
+import gr.codelearn.spring.cloud.showcase.core.transfer.resource.BaseResource;
 
 import java.math.BigDecimal;
 
-public interface Rule<T extends BaseEntity> {
+public interface Rule<T extends BaseResource> {
 	default Float getDiscountPercent() {
 		return 0F;
 	}

@@ -1,8 +1,8 @@
 package gr.codelearn.spring.cloud.showcase.loyalty.service;
 
-import gr.codelearn.spring.cloud.showcase.loyalty.base.AbstractLogComponent;
+import gr.codelearn.spring.cloud.showcase.core.base.AbstractLogComponent;
+import gr.codelearn.spring.cloud.showcase.core.transfer.resource.OrderResource;
 import gr.codelearn.spring.cloud.showcase.loyalty.domain.Coupon;
-import gr.codelearn.spring.cloud.showcase.loyalty.domain.Order;
 import gr.codelearn.spring.cloud.showcase.loyalty.service.rule.Rule;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,11 +18,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class LoyaltyServiceImpl extends AbstractLogComponent implements LoyaltyService {
 	private final CouponService couponService;
-	private final List<Rule<Order>> ruleList;
+	private final List<Rule<OrderResource>> ruleList;
 
 	@PostConstruct
-	public void init() {
-		Collections.sort(ruleList, Comparator.comparingLong(Rule::getPriority));
+	public void initialize() {
+		ruleList.sort(Comparator.comparingLong(Rule::getPriority));
 		Collections.reverse(ruleList);
 
 		logger.trace("Rule list hosting {} rule(s) is now sorted by highest rule priority (bigger is higher).",
@@ -31,9 +31,9 @@ public class LoyaltyServiceImpl extends AbstractLogComponent implements LoyaltyS
 
 	@Override
 	public Optional<Coupon> apply(Order order) {
-		Rule matchingRule = checkRules(order);
+		var matchingRule = checkRules(order);
 
-		Coupon generatedCoupon = (matchingRule != null ? couponService.generate(matchingRule) : null);
+		Coupon generatedCoupon = matchingRule != null ? couponService.generate(matchingRule) : null;
 
 		return Optional.ofNullable(generatedCoupon);
 	}
@@ -44,8 +44,8 @@ public class LoyaltyServiceImpl extends AbstractLogComponent implements LoyaltyS
 		couponService.update(coupon);
 	}
 
-	private Rule checkRules(final Order order) {
-		for (Rule rule : ruleList) {
+	private Rule<OrderResource> checkRules(final OrderResource order) {
+		for (Rule<OrderResource> rule : ruleList) {
 			if (rule.matches(order)) {
 				logger.debug("Rule {} matched order[{}] giving {}% discount and {} as fixed discount.",
 							 rule.getClass().getSimpleName(), order.getId(), rule.getDiscountPercent() * 100,
@@ -53,6 +53,8 @@ public class LoyaltyServiceImpl extends AbstractLogComponent implements LoyaltyS
 				return rule;
 			}
 		}
+
+		logger.debug("{}", order);
 		return null;
 	}
 }

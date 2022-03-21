@@ -1,5 +1,6 @@
 package gr.codelearn.spring.cloud.showcase.loyalty.domain;
 
+import gr.codelearn.spring.cloud.showcase.core.domain.BaseModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,7 +27,7 @@ import java.util.Date;
 @Builder
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class Coupon extends BaseEntity {
+public class Coupon extends BaseModel {
 	@NotNull
 	@Column(length = 36, nullable = false)
 	private String code;

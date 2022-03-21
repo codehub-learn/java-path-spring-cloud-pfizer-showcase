@@ -1,3 +1,5 @@
+server:
+  port: 10200
 spring:
   data:
     jpa:
@@ -16,18 +18,14 @@ spring:
       minimum-idle: 1
       pool-name: eshopConnectionPooling
       transaction-isolation: TRANSACTION_READ_COMMITTED
+      username: sa
+      password: sa
       data-source-properties:
         cachePrepStmts: true
         prepStmtCacheSize: 250
         prepStmtCacheSqlLimit: 2048
-    # Mode to apply when determining if DataSource initialization should be performed using the available DDL (schema
-    # .sql) and DML (data.sql) scripts.
-    initialization-mode: never
-    password: sa
-    platform: h2
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:h2:file:~/eshop-app;IFEXISTS=FALSE;AUTO_SERVER=TRUE;
-    username: sa
+    url: jdbc:h2:file:~/.h2/spring-cloud/loyalty;IFEXISTS=FALSE;AUTO_SERVER=TRUE;
   h2:
     console:
       enabled: true
@@ -51,27 +49,19 @@ spring:
         format_sql: true
         order_inserts: true
         order_updates: true
-    show-sql: false
-  freemarker:
-    checkTemplateLocation: false
-  sendgrid:
-    api-key:
-    properties:
-      sender:
-        name: Constantinos Giannacoulis
-      username:
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username:
-    password:
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-      sender:
-        name: Constantinos Giannacoulis
-    protocol: smtp
-    test-connection: false
+        query:
+          in_clause_parameter_padding: true
+          generate_statistics: true # NOT a production setting
+          session:
+            events:
+              log:
+                LOG_QUERIES_SLOWER_THAN_MS: 10 # NOT a production setting
+      show-sql: false
+  application:
+    name: loyalty-service
+  sql:
+    init:
+      # Mode to apply when determining if DataSource initialization should be performed using the available DDL (schema
+      # .sql) and DML (data.sql) scripts.
+      mode: never
+      platform: h2
