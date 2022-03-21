@@ -1,9 +1,8 @@
 package gr.codelearn.spring.cloud.showcase.order.service;
 
-import gr.codelearn.spring.cloud.showcase.order.domain.Customer;
+import gr.codelearn.spring.cloud.showcase.core.domain.PaymentMethod;
+import gr.codelearn.spring.cloud.showcase.core.service.BaseService;
 import gr.codelearn.spring.cloud.showcase.order.domain.Order;
-import gr.codelearn.spring.cloud.showcase.order.domain.PaymentMethod;
-import gr.codelearn.spring.cloud.showcase.order.domain.Product;
 
 public interface OrderService extends BaseService<Order, Long> {
 	Order initiateOrder(Customer customer);

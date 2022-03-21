@@ -1,7 +1,8 @@
 package gr.codelearn.spring.cloud.showcase.order.service;
 
+import gr.codelearn.spring.cloud.showcase.core.transfer.KeyValue;
 import gr.codelearn.spring.cloud.showcase.order.repository.OrderReportRepository;
-import gr.codelearn.spring.cloud.showcase.order.transfer.KeyValue;
+import gr.codelearn.spring.cloud.showcase.order.transfer.PurchasesPerCustomerCategoryDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,17 @@ public class OrderReportServiceImpl implements OrderReportService {
 	}
 
 	@Override
-	public Long countByCouponCodeIsNotNullAndCustomer(final String email) {
-		return orderReportRepository.countByCouponCodeIsNotNullAndCustomer(email);
+	public Long countByNotNullCouponCodeAndEmail(final String email) {
+		return orderReportRepository.countByNotNullCouponCodeAndEmail(email);
+	}
+
+	@Override
+	public List<KeyValue<String, Integer>> findProductSaleFrequency() {
+		return orderReportRepository.findProductSaleFrequency();
+	}
+
+	@Override
+	public List<PurchasesPerCustomerCategoryDto> findTotalNumberAndCostOfPurchasesPerCustomerCategory() {
+		return orderReportRepository.findTotalNumberAndCostOfPurchasesPerCustomerCategory();
 	}
 }

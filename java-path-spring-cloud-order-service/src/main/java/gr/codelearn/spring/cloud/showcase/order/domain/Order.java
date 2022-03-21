@@ -1,6 +1,8 @@
 package gr.codelearn.spring.cloud.showcase.order.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import gr.codelearn.spring.cloud.showcase.core.domain.BaseModel;
+import gr.codelearn.spring.cloud.showcase.core.domain.PaymentMethod;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,7 +27,7 @@ import java.util.Set;
 @Builder
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class Order extends BaseEntity {
+public class Order extends BaseModel {
 	private interface MyDelegate {
 		boolean add(OrderItem orderItem);
 

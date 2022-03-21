@@ -2,6 +2,7 @@ package gr.codelearn.spring.cloud.showcase.order.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import gr.codelearn.spring.cloud.showcase.core.domain.BaseModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,7 +29,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class OrderItem extends BaseEntity {
+public class OrderItem extends BaseModel {
 	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	private Product product;
