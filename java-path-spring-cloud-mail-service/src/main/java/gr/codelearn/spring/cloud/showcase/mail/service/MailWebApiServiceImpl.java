@@ -6,7 +6,7 @@ import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
-import gr.codelearn.spring.cloud.showcase.mail.base.AbstractLogComponent;
+import gr.codelearn.spring.cloud.showcase.core.base.AbstractLogComponent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;

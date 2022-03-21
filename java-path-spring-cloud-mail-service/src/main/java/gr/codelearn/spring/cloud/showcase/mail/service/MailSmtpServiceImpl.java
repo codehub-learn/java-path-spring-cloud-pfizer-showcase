@@ -2,7 +2,7 @@ package gr.codelearn.spring.cloud.showcase.mail.service;
 
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
-import gr.codelearn.spring.cloud.showcase.mail.base.AbstractLogComponent;
+import gr.codelearn.spring.cloud.showcase.core.base.AbstractLogComponent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
@@ -53,7 +53,7 @@ public class MailSmtpServiceImpl extends AbstractLogComponent implements MailSer
 		StringWriter stringWriter = new StringWriter();
 		Map<String, Object> model = new HashMap<>();
 		model.put("name", env.getProperty("spring.mail.properties.sender.name"));
-		model.put("username", "costas.giannacoulis");
+		model.put("username", env.getProperty("spring.mail.username"));
 		freemarkerConfiguration.getTemplate("template.ftl").process(model, stringWriter);
 		return stringWriter.getBuffer().toString();
 	}

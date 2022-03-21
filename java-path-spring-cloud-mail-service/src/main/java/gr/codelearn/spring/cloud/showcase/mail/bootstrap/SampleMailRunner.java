@@ -1,6 +1,6 @@
 package gr.codelearn.spring.cloud.showcase.mail.bootstrap;
 
-import gr.codelearn.spring.cloud.showcase.mail.base.AbstractLogComponent;
+import gr.codelearn.spring.cloud.showcase.core.base.AbstractLogComponent;
 import gr.codelearn.spring.cloud.showcase.mail.service.MailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
