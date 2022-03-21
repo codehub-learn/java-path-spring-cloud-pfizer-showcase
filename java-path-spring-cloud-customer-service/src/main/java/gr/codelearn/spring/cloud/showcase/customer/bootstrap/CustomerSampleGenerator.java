@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Profile("customer-sample-generator")
+@Profile("generate-customers")
 @Component
 @RequiredArgsConstructor
 public class CustomerSampleGenerator extends AbstractLogComponent implements CommandLineRunner {

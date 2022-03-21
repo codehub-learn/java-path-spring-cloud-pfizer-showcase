@@ -9,6 +9,8 @@ import gr.codelearn.spring.cloud.showcase.order.domain.Order;
 import gr.codelearn.spring.cloud.showcase.order.domain.OrderItem;
 import gr.codelearn.spring.cloud.showcase.order.mapper.OrderMapper;
 import gr.codelearn.spring.cloud.showcase.order.repository.OrderRepository;
+import gr.codelearn.spring.cloud.showcase.order.service.client.LoyaltyServiceClient;
+import gr.codelearn.spring.cloud.showcase.order.service.client.MailServiceClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
@@ -21,8 +23,10 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl extends BaseServiceImpl<Order> implements OrderService {
+	private final LoyaltyServiceClient loyaltyServiceClient;
 	private final OrderRepository orderRepository;
 	private final OrderMapper orderMapper;
+	private final MailServiceClient mailServiceClient;
 
 	@Override
 	public JpaRepository<Order, Long> getRepository() {
