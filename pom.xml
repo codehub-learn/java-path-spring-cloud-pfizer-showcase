@@ -52,6 +52,11 @@
 
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>org.mapstruct</groupId>
+				<artifactId>mapstruct</artifactId>
+				<version>${mapstruct.version}</version>
+			</dependency>
 			<!--
 			Asynchronous Logging @see https://logging.apache.org/log4j/2.x/manual/async.html
 			Hint:
