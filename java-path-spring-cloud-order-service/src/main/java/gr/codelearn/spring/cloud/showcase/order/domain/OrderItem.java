@@ -31,8 +31,16 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(callSuper = true)
 public class OrderItem extends BaseModel {
 	@NotNull
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	private Product product;
+	@Column(length = 50, nullable = false)
+	private String serial;
+
+	@NotNull
+	@Column(length = 50, nullable = false)
+	private String name;
+
+	@NotNull
+	@Column(length = 50, nullable = false)
+	private String categoryDescription;
 
 	@JsonBackReference("orderItems")
 	@NotNull

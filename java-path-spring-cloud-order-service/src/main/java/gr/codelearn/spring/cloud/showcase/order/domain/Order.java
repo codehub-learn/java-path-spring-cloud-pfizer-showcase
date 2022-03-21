@@ -2,6 +2,7 @@ package gr.codelearn.spring.cloud.showcase.order.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import gr.codelearn.spring.cloud.showcase.core.domain.BaseModel;
+import gr.codelearn.spring.cloud.showcase.core.domain.CustomerCategory;
 import gr.codelearn.spring.cloud.showcase.core.domain.PaymentMethod;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,13 +35,14 @@ public class Order extends BaseModel {
 		boolean remove(OrderItem orderItem);
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	private Customer customer;
-
 	@NotNull
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(nullable = false)
-	private Date submitDate;
+	@Column(length = 50, nullable = false)
+	private String email;
+
+	@Enumerated(EnumType.STRING)
+	@NotNull
+	@Column(length = 10, nullable = false)
+	private CustomerCategory customerCategory;
 
 	@JsonManagedReference("orderItems")
 	@ToString.Exclude
@@ -57,6 +59,11 @@ public class Order extends BaseModel {
 	@NotNull
 	@Column(precision = 10, scale = 2, nullable = false)
 	private BigDecimal cost;
+
+	@NotNull
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(nullable = false)
+	private Date submitDate;
 
 	@Column(length = 36)
 	private String couponCode;

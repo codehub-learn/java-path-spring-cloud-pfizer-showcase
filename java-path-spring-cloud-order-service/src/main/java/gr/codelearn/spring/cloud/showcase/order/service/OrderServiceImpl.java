@@ -2,8 +2,12 @@ package gr.codelearn.spring.cloud.showcase.order.service;
 
 import gr.codelearn.spring.cloud.showcase.core.domain.PaymentMethod;
 import gr.codelearn.spring.cloud.showcase.core.service.BaseServiceImpl;
+import gr.codelearn.spring.cloud.showcase.core.transfer.resource.CouponResource;
+import gr.codelearn.spring.cloud.showcase.core.transfer.resource.CustomerResource;
+import gr.codelearn.spring.cloud.showcase.core.transfer.resource.ProductResource;
 import gr.codelearn.spring.cloud.showcase.order.domain.Order;
 import gr.codelearn.spring.cloud.showcase.order.domain.OrderItem;
+import gr.codelearn.spring.cloud.showcase.order.mapper.OrderMapper;
 import gr.codelearn.spring.cloud.showcase.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,13 +16,13 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl extends BaseServiceImpl<Order> implements OrderService {
-	private final LoyaltyService loyaltyService;
 	private final OrderRepository orderRepository;
+	private final OrderMapper orderMapper;
 
 	@Override
 	public JpaRepository<Order, Long> getRepository() {
@@ -26,12 +30,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order> implements OrderSer
 	}
 
 	@Override
-	public Order initiateOrder(Customer customer) {
-		return Order.builder().customer(customer).build();
+	public Order initiateOrder(CustomerResource customer) {
+		return Order.builder().email(customer.getEmail()).customerCategory(customer.getCustomerCategory()).build();
 	}
 
 	@Override
-	public void addItem(Order order, Product product, int quantity) {
+	public void addItem(Order order, ProductResource product, int quantity) {
 		if (checkNullability(order, product)) {
 			return;
 		}
@@ -40,7 +44,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order> implements OrderSer
 
 		// If product is already contained in the order, don't add it again, just increase the quantity accordingly
 		for (OrderItem oi : order.getOrderItems()) {
-			if (oi.getProduct().getSerial().equals(product.getSerial())) {
+			if (oi.getSerial().equals(product.getSerial())) {
 				oi.setQuantity(oi.getQuantity() + quantity);
 				increasedQuantity = true;
 				break;
@@ -51,37 +55,27 @@ public class OrderServiceImpl extends BaseServiceImpl<Order> implements OrderSer
 			order.add(newOrderItem(order, product, quantity));
 		}
 
-		logger.debug("Product[{}] added to Order[{}]", product, order);
+		logger.debug("ProductResource[{}] added to Order[{}]", product, order);
 	}
 
-	private boolean checkNullability(Order order, Product product) {
+	private boolean checkNullability(Order order, ProductResource product) {
 		if (order == null) {
 			logger.warn("Order is null.");
 			return true;
 		}
 		if (product == null) {
-			logger.warn("Product is null.");
+			logger.warn("ProductResource is null.");
 			return true;
 		}
 		return false;
 	}
 
-	@Override
-	public void updateItem(Order order, Product product, int quantity) {
-		if (checkNullability(order, product)) {
-			return;
-		}
-
-		order.getOrderItems().removeIf(oi -> oi.getProduct().getSerial().equals(product.getSerial()));
-		order.getOrderItems().add(newOrderItem(order, product, quantity));
-
-		logger.debug("Product[{}] updated in Order[{}]", product, order);
-	}
-
-	private OrderItem newOrderItem(Order order, Product product, int quantity) {
+	private OrderItem newOrderItem(Order order, ProductResource product, int quantity) {
 		//@formatter:off
 		return OrderItem.builder()
-				.product(product)
+				.serial(product.getSerial())
+				.name(product.getName())
+				.categoryDescription(product.getCategory().getDescription())
 				.order(order)
 				.quantity(quantity)
 				.price(product.getPrice()).build();
@@ -89,13 +83,25 @@ public class OrderServiceImpl extends BaseServiceImpl<Order> implements OrderSer
 	}
 
 	@Override
-	public void deleteItem(Order order, Product product) {
+	public void updateItem(Order order, ProductResource product, int quantity) {
 		if (checkNullability(order, product)) {
 			return;
 		}
 
-		order.getOrderItems().removeIf(oi -> oi.getProduct().getSerial().equals(product.getSerial()));
-		logger.debug("Product[{}] removed from Order[{}]", product, order);
+		order.getOrderItems().removeIf(oi -> oi.getSerial().equals(product.getSerial()));
+		order.getOrderItems().add(newOrderItem(order, product, quantity));
+
+		logger.debug("ProductResource[{}] updated in Order[{}]", product, order);
+	}
+
+	@Override
+	public void deleteItem(Order order, ProductResource product) {
+		if (checkNullability(order, product)) {
+			return;
+		}
+
+		order.getOrderItems().removeIf(oi -> oi.getSerial().equals(product.getSerial()));
+		logger.debug("ProductResource[{}] removed from Order[{}]", product, order);
 	}
 
 	@Override
@@ -111,30 +117,37 @@ public class OrderServiceImpl extends BaseServiceImpl<Order> implements OrderSer
 		order.setSubmitDate(new Date());
 
 		//Check for potential loyalty actions
-		var coupon = loyaltyService.apply(order);
+		var coupon = Objects.requireNonNull(loyaltyServiceClient.apply(orderMapper.toResource(order)).getBody())
+				.getData();
 
 		order.setCost(giveDiscount(order, coupon));
-		if (coupon.isPresent()) {
-			order.setCouponCode(coupon.get().getCode());
+		if (coupon != null) {
+			order.setCouponCode(coupon.getCode());
 		}
 
 		var savedOrder = save(order);
-		if (coupon.isPresent()) {
-			loyaltyService.declare(coupon.get());
+		if (coupon != null) {
+			loyaltyServiceClient.declare(coupon);
 		}
+		mailServiceClient.send(savedOrder.getEmail(),
+							   String.format("Successfully submitted your order %d.", savedOrder.getId()),
+							   String.format("You have successfully submitted your order with id %d costing %f at %tc.",
+											 savedOrder.getId(), savedOrder.getCost(), savedOrder.getSubmitDate()));
 		return savedOrder;
 	}
 
 	private boolean validate(Order order) {
-		return order != null && !order.getOrderItems().isEmpty() && order.getCustomer() != null;
+		return order != null && !order.getOrderItems().isEmpty() && order.getEmail() != null &&
+				order.getCustomerCategory() != null;
 	}
 
-	private BigDecimal giveDiscount(Order order, Optional<Coupon> coupon) {
-		var totalDiscount =
-				order.getCustomer().getCustomerCategory().getDiscount() + order.getPaymentMethod().getDiscount();
+	private BigDecimal giveDiscount(Order order, CouponResource coupon) {
+		var totalDiscountPercent = order.getCustomerCategory().getDiscount() + order.getPaymentMethod().getDiscount();
+		var explicitDiscountAmount = BigDecimal.ZERO;
 
-		if (coupon.isPresent()) {
-			totalDiscount += coupon.get().getDiscountPercent();
+		if (coupon != null) {
+			totalDiscountPercent += coupon.getDiscountPercent();
+			explicitDiscountAmount = coupon.getDiscountAmount();
 		}
 
 		//@formatter:off
@@ -145,10 +158,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order> implements OrderSer
 		//@formatter:on
 
 		// Apply discounts
-		var costAfterDiscount = originalCost.multiply(BigDecimal.valueOf(1F - totalDiscount));
+		var costAfterDiscount = originalCost.multiply(BigDecimal.valueOf(1F - totalDiscountPercent));
+		costAfterDiscount = costAfterDiscount.subtract(explicitDiscountAmount);
 
-		logger.debug("Order[{}], originalCost: {}, totalDiscount: {}%, finalCost: {}.", order.getId(), originalCost,
-					 totalDiscount * 100, costAfterDiscount);
+		logger.debug("Order[{}], originalCost: {}, discountAmount: {}, totalDiscount: {}%, finalCost: {}.",
+					 order.getId(), originalCost, explicitDiscountAmount, totalDiscountPercent * 100,
+					 costAfterDiscount);
 
 		return costAfterDiscount;
 	}

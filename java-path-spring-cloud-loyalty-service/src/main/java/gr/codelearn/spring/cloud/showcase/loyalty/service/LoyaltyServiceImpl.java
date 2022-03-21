@@ -30,7 +30,7 @@ public class LoyaltyServiceImpl extends AbstractLogComponent implements LoyaltyS
 	}
 
 	@Override
-	public Optional<Coupon> apply(Order order) {
+	public Optional<Coupon> apply(OrderResource order) {
 		var matchingRule = checkRules(order);
 
 		Coupon generatedCoupon = matchingRule != null ? couponService.generate(matchingRule) : null;
