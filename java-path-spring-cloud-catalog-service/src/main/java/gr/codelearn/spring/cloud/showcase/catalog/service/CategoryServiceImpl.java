@@ -26,7 +26,6 @@ public class CategoryServiceImpl extends BaseServiceImpl<Category> implements Ca
 
 	@Override
 	public Category findByDescription(String description) {
-		logger.info("Category does not exist in cache, fetching from repository.");
 		return categoryRepository.findByDescription(description);
 	}
 }
