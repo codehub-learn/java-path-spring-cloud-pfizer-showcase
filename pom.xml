@@ -29,7 +29,6 @@
 
 	<!-- Modules -->
 	<modules>
-		<module>java-path-spring-app</module>
 		<module>java-path-spring-cloud-core</module>
 		<module>java-path-spring-cloud-catalog-service</module>
 		<module>java-path-spring-cloud-customer-service</module>
