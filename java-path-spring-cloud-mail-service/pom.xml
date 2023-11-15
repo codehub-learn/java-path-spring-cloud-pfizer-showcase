@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xmlns="http://maven.apache.org/POM/4.0.0"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>gr.codelearn</groupId>
+		<artifactId>java-path-spring-cloud</artifactId>
+		<version>2023.1.0</version>
+	</parent>
+	<artifactId>java-path-spring-cloud-mail-service</artifactId>
+
+	<!-- Meta-data -->
+	<name>[${project.artifactId}]</name>
+	<description>Java Learning @ Development Path, Spring Path mail module</description>
+
+	<properties>
+		<sendgrid-java.version>4.9.3</sendgrid-java.version>
+	</properties>
+
+	<!-- Dependencies -->
+	<dependencies>
+		<dependency>
+			<groupId>gr.codelearn</groupId>
+			<artifactId>java-path-spring-cloud-core</artifactId>
+			<version>2023.1.0</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>spring-boot-starter-data-jpa</artifactId>
+					<groupId>org.springframework.boot</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+					<groupId>org.springframework.boot</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- FreeMarker dependency -->
+		<dependency>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+		</dependency>
+		<!-- Dependency required for FreeMarker to properly work -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+		</dependency>
+		<!-- Mail related dependencies -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.sendgrid</groupId>
+			<artifactId>sendgrid-java</artifactId>
+			<version>${sendgrid-java.version}</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<!-- Plugins -->
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+</project>

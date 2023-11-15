@@ -30,6 +30,11 @@
 	<!-- Modules -->
 	<modules>
 		<module>java-path-spring-app</module>
+		<module>java-path-spring-cloud-core</module>
+		<module>java-path-spring-cloud-catalog-service</module>
+		<module>java-path-spring-cloud-customer-service</module>
+		<module>java-path-spring-cloud-mail-service</module>
+		<module>java-path-spring-cloud-order-service</module>
 	</modules>
 
 	<!-- Properties/Variables -->
@@ -43,30 +48,40 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
+		<!-- Spring Cloud version -->
+		<spring-cloud.version>2022.0.4</spring-cloud.version>
+
 		<!-- Library versions-->
+		<mapstruct.version>1.5.5.Final</mapstruct.version>
+		<lombok.mapstruct.binding.version>0.2.0</lombok.mapstruct.binding.version>
 		<disruptor-maven-plugin.version>3.4.4</disruptor-maven-plugin.version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
-			<!--
-			Asynchronous Logging @see https://logging.apache.org/log4j/2.x/manual/async.html
-			Hint:
-			Don't forget to set system property
-			-Dlog4j2.contextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
-			 to make all loggers asynchronous
-			-->
+			<!-- Spring Cloud specific -->
 			<dependency>
-				<groupId>com.lmax</groupId>
-				<artifactId>disruptor</artifactId>
-				<version>${disruptor-maven-plugin.version}</version>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
 	<!-- Dependencies -->
 	<dependencies>
-		<!-- you need to exclude spring-boot-starter-logging dependency as Logback is the default implementation -->
+		<!-- You can easily generate your own configuration metadata file from items annotated with
+		@ConfigurationProperties by using the spring-boot-configuration-processor jar. The jar includes a Java
+		annotation processor which is invoked as your project is compiled. -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+		<!-- You need to exclude spring-boot-starter-logging dependency as Logback is the default implementation -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
@@ -81,101 +96,174 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-log4j2</artifactId>
 		</dependency>
+		<!--
+		Asynchronous Logging @see https://logging.apache.org/log4j/2.x/manual/async.html
+		Hint:
+		Don't forget to set system property
+		-Dlog4j2.contextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
+		 to make all loggers asynchronous
+		-->
 		<dependency>
 			<groupId>com.lmax</groupId>
 			<artifactId>disruptor</artifactId>
+			<version>${disruptor-maven-plugin.version}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
-
-		<!-- You can easily generate your own configuration metadata file from items annotated with
-		@ConfigurationProperties by using the spring-boot-configuration-processor jar. The jar includes a Java
-		annotation processor which is invoked as your project is compiled. -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-configuration-processor</artifactId>
-			<optional>true</optional>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>${mapstruct.version}</version>
 		</dependency>
 	</dependencies>
 
 	<build>
-		<!-- Plugins and corresponding configuration used by all modules -->
+		<!-- Plugins and corresponding configuration -->
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>3.3.1</version>
+					<configuration>
+						<delimiters>
+							<!-- Certain JDBC connection URLs contain special character like the Oracle case -->
+							<delimiter>#</delimiter>
+						</delimiters>
+						<useDefaultDelimiters>false</useDefaultDelimiters>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-enforcer-plugin</artifactId>
+					<version>3.4.1</version>
+					<executions>
+						<execution>
+							<id>enforce-versions</id>
+							<goals>
+								<goal>enforce</goal>
+							</goals>
+							<configuration>
+								<rules>
+									<requireJavaVersion>
+										<version>${java.version}</version>
+									</requireJavaVersion>
+									<requireMavenVersion>
+										<version>${maven.version}</version>
+									</requireMavenVersion>
+								</rules>
+							</configuration>
+						</execution>
+						<execution>
+							<id>ban-bad-log4j-versions</id>
+							<phase>validate</phase>
+							<goals>
+								<goal>enforce</goal>
+							</goals>
+							<configuration>
+								<rules>
+									<bannedDependencies>
+										<excludes>
+											<exclude>org.apache.logging.log4j:log4j-core:(,2.17.0)</exclude>
+										</excludes>
+									</bannedDependencies>
+								</rules>
+								<fail>true</fail>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.11.0</version>
+					<configuration>
+						<!--
+						In order to compile your project for Java 11, add the release configuration to the compiler
+						plugin, a new compiler parameter to replace the source and target version parameters
+						-->
+						<release>${java.version}</release>
+						<forceJavacCompilerUse>true</forceJavacCompilerUse>
+						<optimize>true</optimize>
+						<fork>true</fork>
+						<annotationProcessorPaths>
+							<path>
+								<groupId>org.projectlombok</groupId>
+								<artifactId>lombok</artifactId>
+								<version>${lombok.version}</version>
+							</path>
+							<path>
+								<groupId>org.mapstruct</groupId>
+								<artifactId>mapstruct-processor</artifactId>
+								<version>${mapstruct.version}</version>
+							</path>
+							<path>
+								<groupId>org.projectlombok</groupId>
+								<artifactId>lombok-mapstruct-binding</artifactId>
+								<version>${lombok.mapstruct.binding.version}</version>
+							</path>
+						</annotationProcessorPaths>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>3.3.0</version>
+					<configuration>
+						<archive>
+							<addMavenDescriptor>true</addMavenDescriptor>
+							<index>true</index>
+							<manifest>
+								<addClasspath>false</addClasspath>
+								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							</manifest>
+							<manifestEntries>
+								<Copyright>(c)Code.Hub 2023</Copyright>
+								<Specification-Title>${project.name}</Specification-Title>
+								<Specification-Version>${project.version}</Specification-Version>
+								<Specification-Vendor>Code.Learn by Code.Hub</Specification-Vendor>
+								<Implementation-Title>${project.groupId}.${project.artifactId}</Implementation-Title>
+								<Implementation-Vendor>Code.Learn by Code.Hub</Implementation-Vendor>
+							</manifestEntries>
+						</archive>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+					<configuration>
+						<excludes>
+							<exclude>
+								<groupId>org.projectlombok</groupId>
+								<artifactId>lombok</artifactId>
+							</exclude>
+							<exclude>
+								<groupId>org.mapstruct</groupId>
+								<artifactId>mapstruct</artifactId>
+							</exclude>
+						</excludes>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+		<!-- Plugins -->
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.3.1</version>
-				<configuration>
-					<delimiters>
-						<!-- Certain JDBC connection URLs contain special character like the Oracle case -->
-						<delimiter>#</delimiter>
-					</delimiters>
-					<useDefaultDelimiters>false</useDefaultDelimiters>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>3.4.1</version>
-				<executions>
-					<execution>
-						<id>enforce-versions</id>
-						<goals>
-							<goal>enforce</goal>
-						</goals>
-						<configuration>
-							<rules>
-								<requireJavaVersion>
-									<version>${java.version}</version>
-								</requireJavaVersion>
-								<requireMavenVersion>
-									<version>${maven.version}</version>
-								</requireMavenVersion>
-							</rules>
-						</configuration>
-					</execution>
-					<execution>
-						<id>ban-bad-log4j-versions</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>enforce</goal>
-						</goals>
-						<configuration>
-							<rules>
-								<bannedDependencies>
-									<excludes>
-										<exclude>org.apache.logging.log4j:log4j-core:(,2.17.0)</exclude>
-									</excludes>
-								</bannedDependencies>
-							</rules>
-							<fail>true</fail>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.11.0</version>
-				<configuration>
-					<!--
-					In order to compile your project for Java 11, add the release configuration to the compiler
-					plugin, a new compiler parameter to replace the source and target version parameters
-					-->
-					<release>${java.version}</release>
-					<forceJavacCompilerUse>true</forceJavacCompilerUse>
-					<fork>true</fork>
-					<annotationProcessorPaths>
-						<path>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-							<version>${lombok.version}</version>
-						</path>
-					</annotationProcessorPaths>
-				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
 			</plugin>
 		</plugins>
 
