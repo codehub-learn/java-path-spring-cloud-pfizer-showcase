@@ -73,6 +73,28 @@ spring:
 server:
   port: 10300
 
+management:
+  endpoint:
+    shutdown:
+      enabled: true # Remote shutdown of the application
+    health:
+      show-details: always # See the following: https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-features.html#production-ready-health
+      group:
+        custom:
+          include: diskSpace, ping # Custom group which contains components the developer defines
+      cache:
+        time-to-live: "30s" # Health endpoint is cached for 30 seconds
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /actuator # Default discovery URL is /actuator but we can even set it to /management/actuator
+      discovery:
+        enabled: true
+      exposure:
+        # Or use the following: health,info,metrics,loggers,auditevents,sessions
+        # You can even do the opposite, include everything and then exclude the ones you don't want to expose
+        include: "*"
+
 eureka:
   client:
     fetch-registry: true
