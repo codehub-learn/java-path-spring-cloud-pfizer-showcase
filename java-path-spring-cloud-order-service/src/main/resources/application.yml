@@ -69,6 +69,8 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
+  config:
+    import: optional:configserver:http://localhost:8000
 
 server:
   port: 10300

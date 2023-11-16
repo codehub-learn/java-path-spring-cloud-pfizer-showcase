@@ -31,6 +31,7 @@
 	<modules>
 		<module>java-path-spring-cloud-infra-eureka-service</module>
 		<module>java-path-spring-cloud-infra-gateway-service</module>
+		<module>java-path-spring-cloud-infra-config-service</module>
 		<module>java-path-spring-cloud-core</module>
 		<module>java-path-spring-cloud-catalog-service</module>
 		<module>java-path-spring-cloud-customer-service</module>

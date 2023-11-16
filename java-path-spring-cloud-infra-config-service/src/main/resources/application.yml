@@ -1,0 +1,28 @@
+server:
+  port: 8000
+spring:
+  application:
+    name: config-service
+  profiles:
+    active: git,native
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/codehub-learn/java-path-spring-cloud-config
+          refresh-rate: 60
+          default-label: main
+          clone-on-start: true
+          timeout: 5
+          force-pull: true
+          username: ${GITHUB_USERNAME}
+          password: ${GITHUB_ACCESS_TOKEN}
+          order: 1
+        native:
+          search-locations: file:///${user.home}/local-repo
+          order: 100
+      allow-override: true
+      override-none: false
+      override-system-properties: true
+encrypt:
+  key: 1h1i1hiasdh1iiy87y8y8uy78ijahsbsxbjahuaO21Iccvv2e23H1eeH2yrfa1298a12ww111ssq11GT1132322FxFcD
