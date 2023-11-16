@@ -1,0 +1,44 @@
+server:
+  port: 8200
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          lower-case-service-id: true
+          enabled: true
+      routes:
+        - id: catalog-service
+          uri: lb://catalog-service
+          predicates:
+            - Path=/products/**
+            - Method=GET,POST,PUT,DELETE
+        - id: catalog-service
+          uri: lb://catalog-service
+          predicates:
+            - Path=/categories/**
+        - id: customer-service
+          uri: lb://customer-service
+          predicates:
+            - Path=/customers/**
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/orders/**
+eureka:
+  client:
+    fetch-registry: true
+    refresh:
+      enable: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8100/eureka/
+    rest-template-timeout:
+      connect-timeout: 5000
+      connect-request-timeout: 8000
+      socket-timeout: 10000
+  instance:
+    lease-renewal-interval-in-seconds: 30
+    instance-id: ${spring.application.name}-${random.value}
