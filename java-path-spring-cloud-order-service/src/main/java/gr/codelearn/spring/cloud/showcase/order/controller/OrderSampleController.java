@@ -7,10 +7,14 @@ import gr.codelearn.spring.cloud.showcase.core.transfer.resource.ProductResource
 import gr.codelearn.spring.cloud.showcase.order.domain.Order;
 import gr.codelearn.spring.cloud.showcase.order.service.OrderReportService;
 import gr.codelearn.spring.cloud.showcase.order.service.OrderService;
+import gr.codelearn.spring.cloud.showcase.order.service.client.CatalogServiceClient;
+import gr.codelearn.spring.cloud.showcase.order.service.client.CustomerServiceClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,8 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderSampleController extends BaseComponent {
 	private final OrderService orderService;
 	private final OrderReportService orderReportService;
-	//	private final CustomerServiceClient customerServiceClient;
-	//	private final CatalogServiceClient catalogServiceClient;
+	private final CustomerServiceClient customerServiceClient;
+	private final CatalogServiceClient catalogServiceClient;
 
 	@GetMapping(params = "mode=single")
 	public void generateSingleOrder() {
@@ -155,14 +159,14 @@ public class OrderSampleController extends BaseComponent {
 	}
 
 	private ProductResource getProductResource(final String s) {
-		return null;//Objects.requireNonNull(catalogServiceClient.findBySerial(s).getBody()).getData();
+		return Objects.requireNonNull(catalogServiceClient.findBySerial(s).getBody()).getData();
 	}
 
 	private CustomerResource getCustomerResource(Long id) {
-		return null;//Objects.requireNonNull(customerServiceClient.findById(id).getBody()).getData();
+		return Objects.requireNonNull(customerServiceClient.findById(id).getBody()).getData();
 	}
 
 	private CustomerResource getCustomerResource(final String s) {
-		return null;//Objects.requireNonNull(customerServiceClient.findByEmail(s).getBody()).getData();
+		return Objects.requireNonNull(customerServiceClient.findByEmail(s).getBody()).getData();
 	}
 }
