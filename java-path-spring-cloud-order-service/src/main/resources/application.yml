@@ -72,3 +72,19 @@ spring:
 
 server:
   port: 10300
+
+eureka:
+  client:
+    fetch-registry: true
+    refresh:
+      enable: false
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8100/eureka/
+    rest-template-timeout:
+      connect-timeout: 5000
+      connect-request-timeout: 8000
+      socket-timeout: 10000
+  instance:
+    lease-renewal-interval-in-seconds: 30
+    instance-id: ${spring.application.name}-${random.value}

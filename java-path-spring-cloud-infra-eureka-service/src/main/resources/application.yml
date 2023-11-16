@@ -1,0 +1,37 @@
+server:
+  port: 8100
+spring:
+  application:
+    name: eureka-service
+eureka:
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+    #Indicates the time in seconds that the Eureka server waits since it received the last heartbeat from a client
+    #before it can remove that client from its registry
+    lease-expiration-duration-in-seconds: 90
+  client:
+    fetch-registry: false
+    healthcheck:
+      enabled: true
+    register-with-eureka: false
+    refresh:
+      enable: true
+    rest-template-timeout:
+      connect-timeout: 5000
+      connect-request-timeout: 8000
+      socket-timeout: 10000
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+  server:
+    #Configuration for disabling self-preservation
+    enable-self-preservation: true
+    #This property tells the Eureka server to run a job at this frequency to evict the expired clients
+    eviction-interval-timer-in-ms: 60000
+    #The server expects client heartbeats at this interval
+    expected-client-renewal-interval-seconds: 30
+    #Based on this property, the server calculates the expected heartbeats per minute from all the registered clients
+    renewal-percent-threshold: 0.85
+    #This property tells the Eureka server to run a job at this frequency to calculate the expected heartbeats from
+    #all the registered clients at this minute
+    renewal-threshold-update-interval-ms: 900000

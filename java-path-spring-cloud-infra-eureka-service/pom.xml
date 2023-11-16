@@ -8,29 +8,17 @@
 		<artifactId>java-path-spring-cloud</artifactId>
 		<version>2023.1.0</version>
 	</parent>
-	<artifactId>java-path-spring-cloud-customer-service</artifactId>
+	<artifactId>java-path-spring-cloud-infra-eureka-service</artifactId>
 
 	<!-- Meta-data -->
 	<name>[${project.artifactId}]</name>
-	<description>Java Learning @ Development Path, Spring Path customer module</description>
+	<description>Java Learning @ Development Path, Spring Cloud Eureka service</description>
 
 	<!-- Dependencies -->
 	<dependencies>
 		<dependency>
-			<groupId>gr.codelearn</groupId>
-			<artifactId>java-path-spring-cloud-core</artifactId>
-			<version>2023.1.0</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
+			<artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
 		</dependency>
 	</dependencies>
 
